@@ -1,5 +1,4 @@
-﻿
-using RestSharp;
+﻿using RestSharp;
 using ApiAutomationFramework.Config;
 
 namespace ApiAutomationFramework.Clients;
@@ -12,7 +11,7 @@ public class ApiClient
     {
         var options = new RestClientOptions(ApiSettings.BaseUrl)
         {
-            MaxTimeout = 30000
+            Timeout = TimeSpan.FromMilliseconds(30000)
         };
 
         _client = new RestClient(options);
@@ -29,6 +28,7 @@ public class ApiClient
     public async Task<RestResponse<TResponse>> PostAsync<TRequest, TResponse>(
         string endpoint,
         TRequest body)
+        where TRequest : class
     {
         var request = new RestRequest(endpoint, Method.Post);
         request.AddJsonBody(body);
@@ -36,9 +36,15 @@ public class ApiClient
         return await _client.ExecuteAsync<TResponse>(request);
     }
 
+    private void AddJsonBody(string? v)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<RestResponse<TResponse>> PutAsync<TRequest, TResponse>(
         string endpoint,
         TRequest body)
+        where TRequest : class
     {
         var request = new RestRequest(endpoint, Method.Put);
         request.AddJsonBody(body);
